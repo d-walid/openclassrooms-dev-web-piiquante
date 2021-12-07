@@ -1,0 +1,14 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "Hot Takes, project 06 for OpenClassrooms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Walid Didoune",
+  "license": "ISC",
+  "dependencies": {
+    "node": "14.0.0"
+  }
+}
