@@ -1,0 +1,75 @@
+const express = require('express');
+const router = express.Router();
+
+const Sauces = require('../models/sauces');
+
+// Add a new sauce to the app
+router.post('/', (req, res, next) => {
+  const sauces = new Sauces({
+    name: req.body.name,
+    manufacturer: req.body.manufacturer,
+    description: req.body.description,
+    mainPepper: req.body.mainPepper,
+    imageUrl: req.body.imageUrl,
+    heat: req.body.heat
+  });
+  sauces
+    .save()
+    .then(() => {
+      res.status(201).json({
+        message: 'Sauce ajoutée avec succès !'
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+// Get all the sauces from the app
+router.get('/', (req, res, next) => {
+  Sauces.find().then(
+    (sauces => {
+      res.status(200).json(sauces);
+    }).catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    })
+  );
+});
+
+// Get one sauce from the app
+router.get('/:id', (req, res, next) => {
+  Sauces.findOne({
+    _id: req.params.id
+  })
+    .then(sauce => {
+      res.status(200).json(sauce);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+// Delete a sauce from the app
+router.delete('/:id', (req, res, next) => {
+  Sauces.deleteOne({
+    _id: req.params.id
+  })
+    .then(() => {
+      res.status(200).json({
+        message: 'Sauce supprimée avec succès !'
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+module.exports = router;
