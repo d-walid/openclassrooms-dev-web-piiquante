@@ -1,4 +1,5 @@
 const Sauces = require("../models/sauces");
+const fs = require("fs");
 
 // Add a new sauce to the app
 exports.createSauce = (req, res, next) => {
@@ -54,20 +55,22 @@ exports.getAllSauces = (req, res, next) => {
 
 // Update a sauce from the app
 exports.updateSauce = (req, res, next) => {
-  const sauce = new Sauces({
-    _id: req.params.id,
-    name: req.body.name,
-    manufacturer: req.body.manufacturer,
-    description: req.body.description,
-    mainPepper: req.body.mainPepper,
-    imageUrl: req.body.imageUrl,
-    heat: req.body.heat,
-  });
+  const sauceObject = req.file
+    ? // if it finds a file, it will parse and update the imageUrl
+      {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
+          req.file.filename
+        }`,
+      }
+    : // else it will only update the concerned fields
+      { ...req.body };
   Sauces.updateOne(
+    { _id: req.params.id },
     {
+      ...sauceObject,
       _id: req.params.id,
-    },
-    sauce
+    }
   )
     .then(() => {
       res.status(201).json({
@@ -83,17 +86,24 @@ exports.updateSauce = (req, res, next) => {
 
 // Delete a sauce from the app
 exports.deleteSauce = (req, res, next) => {
-  Sauces.deleteOne({
-    _id: req.params.id,
-  })
-    .then(() => {
-      res.status(200).json({
-        message: "Sauce supprimée avec succès !",
+  Sauces.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      const filename = sauce.imageUrl.split("/images/")[1]; // get the filename
+      fs.unlink(`images/${filename}`, () => {
+        Sauces.deleteOne({
+          _id: req.params.id,
+        })
+          .then(() => {
+            res.status(200).json({
+              message: "Sauce supprimée avec succès !",
+            });
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
+            });
+          });
       });
     })
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
-    });
+    .catch((error) => res.status(500).json({ error }));
 };

@@ -16,7 +16,7 @@ router.get("/:id", auth, saucesController.getOneSauce);
 router.get("/", auth, saucesController.getAllSauces);
 
 // Update a sauce from the app
-router.put("/:id", auth, saucesController.updateSauce);
+router.put("/:id", auth, multer, saucesController.updateSauce);
 
 // Delete a sauce from the app
 router.delete("/:id", auth, saucesController.deleteSauce);
