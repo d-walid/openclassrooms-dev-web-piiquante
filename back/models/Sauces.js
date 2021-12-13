@@ -1,46 +1,48 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const saucesSchema = mongoose.Schema({
   userId: {
     type: String,
-    required: true
+    required: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   manufacturer: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   mainPepper: {
     type: String,
-    required: true
+    required: true,
   },
   imageUrl: {
     type: String,
-    required: true
+    required: true,
   },
   heat: {
     type: Number,
-    required: true
+    required: true,
   },
   likes: {
-    type: Number
+    type: Number,
+    default: 0,
   },
   dislikes: {
-    type: Number
+    type: Number,
+    default: 0,
   },
   usersLiked: {
-    type: Array
+    type: [String],
   },
   usersDisliked: {
-    type: Array
-  }
+    type: [String],
+  },
 });
 
-module.exports = mongoose.model('Sauces', saucesSchema);
+module.exports = mongoose.model("Sauces", saucesSchema);
