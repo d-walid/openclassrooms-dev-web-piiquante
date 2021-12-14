@@ -21,4 +21,7 @@ router.put("/:id", auth, multer, saucesController.updateSauce);
 // Delete a sauce from the app
 router.delete("/:id", auth, saucesController.deleteSauce);
 
+// Add a like to a sauce
+router.post("/:id/like", auth, saucesController.likeSauce);
+
 module.exports = router;

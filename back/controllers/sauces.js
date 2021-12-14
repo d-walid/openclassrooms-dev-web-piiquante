@@ -107,3 +107,95 @@ exports.deleteSauce = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
+
+exports.likeSauce = (req, res, next) => {
+  const like = req.body.like;
+
+  if (like === 1) {
+    // if the user liked the sauce, we add the userId to the likes array
+    Sauces.updateOne(
+      { _id: req.params.id },
+      {
+        $inc: { likes: 1 }, // increment the likes by 1
+        $push: { usersLiked: req.body.userId }, // add the userId to the usersLiked array
+        _id: req.params.id, // keep the _id
+      }
+    )
+      .then(() => {
+        res.status(201).json({
+          message: "Sauce likée avec succès !",
+        });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        });
+      });
+  } else if (like === -1) {
+    Sauces.updateOne(
+      { _id: req.params.id },
+      {
+        $inc: { dislikes: 1 }, // increment the dislikes by 1
+        $push: { usersDisliked: req.body.userId }, // add the userId to the usersDisliked array
+        _id: req.params.id, // keep the _id
+      }
+    )
+      .then(() => {
+        res.status(201).json({
+          message: "Sauce dislikée avec succès !",
+        });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        });
+      });
+  } else {
+    // cancel the like or dislike of the sauce and remove the userId from the concerned array
+    Sauces.findOne({ _id: req.params.id })
+      .then((sauce) => {
+        const index = sauce.usersLiked.indexOf(req.body.userId);
+
+        if (index !== -1) {
+          Sauces.updateOne(
+            { _id: req.params.id },
+            {
+              $inc: { likes: -1 }, // decrement the likes by 1
+              $pull: { usersLiked: req.body.userId }, // remove the userId from the usersLiked array
+              _id: req.params.id, // keep the _id
+            }
+          )
+            .then(() => {
+              res.status(201).json({
+                message: "Sauce likée annulée avec succès !",
+              });
+            })
+            .catch((error) => {
+              res.status(400).json({
+                error: error,
+              });
+            });
+        } else if (index !== -1) {
+          Sauces.updateOne(
+            { _id: req.params.id },
+            {
+              $inc: { dislikes: -1 }, // decrement the dislikes by 1
+              $pull: { usersDisliked: req.body.userId }, // remove the userId from the usersDisliked array
+              _id: req.params.id, // keep the _id
+            }
+          )
+            .then(() => {
+              res.status(201).json({
+                message: "Sauce dislikée annulée avec succès !",
+              });
+            })
+            .catch((error) => {
+              res.status(400).json({
+                error: error,
+              });
+            });
+        }
+      })
+      .catch((error) => res.status(500).json({ error }));
+  }
+};
