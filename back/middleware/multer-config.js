@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
   },
   // creating the filename with the mime type + the date/hour
   filename: (req, file, callback) => {
-    const name = file.originalname.split(" ").join("_");
+    const name = file.originalname.split(".")[0];
     const extension = MIME_TYPES[file.mimetype];
     callback(null, name + Date.now() + "." + extension); // result = name_dateHour.extension
   },

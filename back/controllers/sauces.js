@@ -154,9 +154,7 @@ exports.likeSauce = (req, res, next) => {
     // cancel the like or dislike of the sauce and remove the userId from the concerned array
     Sauces.findOne({ _id: req.params.id })
       .then((sauce) => {
-        const index = sauce.usersLiked.indexOf(req.body.userId);
-
-        if (index !== -1) {
+        if (sauce.usersLiked.indexOf(req.body.userId) !== -1) {
           Sauces.updateOne(
             { _id: req.params.id },
             {
@@ -175,7 +173,7 @@ exports.likeSauce = (req, res, next) => {
                 error: error,
               });
             });
-        } else if (index !== -1) {
+        } else if (sauce.usersDisliked.indexOf(req.body.userId) !== -1) {
           Sauces.updateOne(
             { _id: req.params.id },
             {
