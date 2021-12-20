@@ -16,12 +16,12 @@ router.get("/:id", auth, saucesController.getOneSauce);
 router.get("/", auth, saucesController.getAllSauces);
 
 // Update a sauce from the app
-router.put("/:id", auth, multer, saucesController.updateSauce);
+router.put("/:id", auth, multer, saucesController.modifySauce);
 
 // Delete a sauce from the app
 router.delete("/:id", auth, saucesController.deleteSauce);
 
 // Add a like to a sauce
-router.post("/:id/like", auth, saucesController.likeSauce);
+router.post("/:id/like", auth, saucesController.likeDislikeSauce);
 
 module.exports = router;

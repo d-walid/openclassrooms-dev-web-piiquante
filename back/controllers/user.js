@@ -23,6 +23,7 @@ exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
+
         // if user not found, return an error 401 (unauthorized)
         return res.status(401).json({ error: "Utilisateur non trovué" });
       }
