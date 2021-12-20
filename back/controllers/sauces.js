@@ -64,7 +64,7 @@ exports.modifySauce = (req, res, next) => {
           }`,
         }
       : { ...req.body };
-    if (sauceObject.userId === sauce.userId) {
+    if (sauce.userId === req.token.userId) {
       Sauces.updateOne(
         { _id: req.params.id },
         { ...sauceObject, _id: req.params.id }
